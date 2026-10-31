@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- 暗色镜像:ZorvAI 品牌暖近黑体系（2026-10-26 与亮色一同从 Apple 纯黑稿切换；
+       唯一真源 genuiagent-sdk ZorvPalette.kt）。此前是纯黑画布 #000000 + 反转白 accent，
+       现为 BrandBackgroundDark #16130F 暖近黑底 + TerracottaDark #D9785A 强调 +
+       OnDark #EDE6DA 文字。语义信号族同为暗色暖族。 -->
+  <color name="ds_bg">#16130F</color>
+
+  <!-- 控制台页面底色暗色镜像：ZorvPalette.BrandBackgroundDark #16130F（与 ds_bg 同值），
+       与 console.html 暗色主底同源；亮色定义见 values/colors.xml。 -->
+  <color name="ds_console_bg">#16130F</color>
+  <color name="ds_surface">#211D18</color>
+  <color name="ds_surface_muted">#2C2820</color>
+  <color name="ds_chip">#2C2820</color>
+  <color name="ds_button_surface">#332D24</color>
+  <color name="ds_border">#4A4439</color>
+  <color name="ds_hairline">#3A352B</color>
+  <color name="ds_text_primary">#EDE6DA</color>
+  <color name="ds_text_secondary">#A89E90</color>
+  <color name="ds_text_tertiary">#A89E90</color>
+  <color name="ds_text_on_accent">#211409</color>
+  <color name="ds_accent">#D9785A</color>
+  <color name="ds_accent_pressed">#C25A38</color>
+  <color name="ds_accent_soft">#3A2A22</color>
+  <color name="ds_ok">#8FBF84</color>
+  <color name="ds_warn">#E0B75C</color>
+  <color name="ds_danger">#E8836F</color>
+  <color name="ds_danger_soft">#43201A</color>
+  <color name="ds_progress_track">#3A352B</color>
+  <color name="ds_scrim">#E6000000</color>
+</resources>

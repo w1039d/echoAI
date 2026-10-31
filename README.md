@@ -1,0 +1,657 @@
+<div align="center">
+
+<img src="logo.svg" alt="Zorv AI" width="168" height="168" />
+
+# Zorv AI
+
+### 运行在 Android 上的设备端 AI Agent · 智能体助手
+
+*On-device AI Agent for Android — tools, personas, memory, an offline LLM engine, and a shared runtime, all on your phone.*
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Android-3DDC84.svg)](https://www.android.com)
+[![Release](https://img.shields.io/github/v/release/Quor-a/ZorvAI?label=release)](https://github.com/Quor-a/ZorvAI/releases)
+[![minSdk](https://img.shields.io/badge/minSdk-26-API.svg)](https://developer.android.com/about/versions/oreo)
+[![compileSdk](https://img.shields.io/badge/compileSdk-36-API.svg)](https://developer.android.com)
+[![AGP](https://img.shields.io/badge/AGP-8.13-3DDC84.svg)](https://developer.android.com/build)
+
+**核心语言 / UI**
+
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF.svg)](https://kotlinlang.org)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.10.2-4285F4.svg)](https://developer.android.com/compose)
+[![Material3](https://img.shields.io/badge/Material3-1.4-4285F4.svg)](https://developer.android.com/jetpack/androidx/releases/compose-material3)
+[![GeckoView](https://img.shields.io/badge/GeckoView-MPL--2.0-success.svg)](https://mozilla.github.io/geckoview/)
+
+**端侧运行时 / 脚本引擎**
+
+[![CPython](https://img.shields.io/badge/CPython-3.14-3776AB.svg)](https://www.python.org)
+[![QuickJS](https://img.shields.io/badge/QuickJS-沙箱-FFC300.svg)](https://github.com/sebastienwae/quickjs-android)
+[![React](https://img.shields.io/badge/React-生成式%20UI-61DAFB.svg)](https://react.dev)
+[![WebView](https://img.shields.io/badge/WebView-离线渲染-4285F4.svg)](https://developer.android.com/reference/android/webkit/WebView)
+
+**离线 AI / 推理引擎**
+
+[![MNN](https://img.shields.io/badge/MNN-离线推理-blue.svg)](https://github.com/alibaba/MNN)
+[![llama.cpp](https://img.shields.io/badge/llama.cpp-离线推理-yellow.svg)](https://github.com/ggml-org/llama.cpp)
+[![Sherpa-NCNN](https://img.shields.io/badge/Sherpa--NCNN-离线%20ASR-4FC08D.svg)](https://github.com/k2-fsa/sherpa-ncnn)
+
+**可视化 / 数据**
+
+[![ECharts](https://img.shields.io/badge/ECharts-图表-FF6B6B.svg)](https://github.com/apache/echarts)
+[![Chart.js](https://img.shields.io/badge/Chart.js-图表-FF6384.svg)](https://github.com/chartjs/Chart.js)
+[![D3.js](https://img.shields.io/badge/D3.js-可视化-F9A03C.svg)](https://github.com/d3/d3)
+[![Mermaid](https://img.shields.io/badge/Mermaid-图表-FF3670.svg)](https://github.com/mermaid-js/mermaid)
+[![KaTeX](https://img.shields.io/badge/KaTeX-数学-008080.svg)](https://github.com/KaTeX/KaTeX)
+
+**系统能力 / 平台通道**
+
+[![Shizuku](https://img.shields.io/badge/Shizuku-免%20Root-8A2BE2.svg)](https://github.com/RikkaApps/Shizuku)
+[![proot](https://img.shields.io/badge/proot-Linux%20沙箱-2F81F7.svg)](https://github.com/proot-me/proot)
+[![Room](https://img.shields.io/badge/Room-持久化-4285F4.svg)](https://developer.android.com/jetpack/androidx/releases/room)
+[![WorkManager](https://img.shields.io/badge/WorkManager-后台任务-4285F4.svg)](https://developer.android.com/topic/libraries/architecture/workmanager)
+[![JGit](https://img.shields.io/badge/JGit-Git%20操作-6B6B6B.svg)](https://www.eclipse.org/jgit/)
+
+</div>
+
+<p align="center">
+  <b>☕ 如果这个项目对你有帮助，欢迎到 <a href="https://afdian.com/a/zorvAI">爱发电 (afdian)</a> 支持我们，助力持续开发 ❤️</b>
+</p>
+
+> **包名**：`com.ai.assistance.quro` ｜ **技术栈**：Kotlin 2.3 + Jetpack Compose 1.10.2（Material3 1.4.0）｜ **AGP 8.13 / compileSdk 36 / minSdk 26 / targetSdk 34** ｜ **当前版本**：`1.2.1`（`versionCode 1002001`）
+>
+> Zorv AI 把「对话助手」做成一个真正能操作手机的 Agent：它在设备上运行，能用无障碍 / Shizuku / ROOT 等通道操控系统，调用 **235 个内置工具**，运行 **MNN / llama.cpp 离线大模型**，内置终端与 Linux 沙箱、MCP、知识库、语音合成/识别，并通过飞书、QQ、微信与你保持在线。
+>
+> 它还是一套**可自我扩展的 Agent 运行时**：APK 级插件框架让「独立 APK」注册扩展点，就能给 AI 加**新工具 / 新 ACI 能力 / 新界面 / 新指令** —— 宿主不用改一行代码。
+
+**📘 文档导航**：本文是**功能与架构总纲**。每个架构模块、每个功能模块各有一份完整技术文档，见 [文档索引](#文档索引--documentation-index)。
+
+---
+
+## 目录 · Table of Contents
+
+- [项目简介 · What it does](#项目简介--what-it-does)
+- [开源地址 · Open Source](#开源地址--open-source)
+- [功能亮点 · Features](#功能亮点--features)
+- [架构总纲 · Architecture](#架构总纲--architecture)
+- [功能地图 · Feature Map](#功能地图--feature-map)
+- [系统要求与从源码构建](#系统要求与从源码构建)
+- [排查与故障处理 · Troubleshooting](#排查与故障处理--troubleshooting)
+- [下载 / APK · Download](#下载--apk--download)
+- [文档索引 · Documentation Index](#文档索引--documentation-index)
+- [许可证 · License](#许可证--license)
+- [贡献 / 反馈 / 关键词](#贡献--contributing)
+
+---
+
+## 项目简介 · What it does
+
+大多数「手机 AI 助手」本质是云端聊天框 —— 把你的话发给服务器，再把回答渲染出来。Zorv AI 不一样：它把**推理**和**执行**都放在你这台手机上，目标是让 AI 真正成为能替你操作设备的「智能体」，而不只是会聊天的模型。
+
+从全局看，Zorv AI 解决了三件事：
+
+1. **让 AI 能动手**。内置 235 个工具，覆盖读屏/点按、文件、通信、定时、终端、知识库等；更高权限的能力（Shizuku、设备管理员、ROOT、应用内 Linux）按 **L1–L5** 分级，**每一级都要你显式授权**，未授权即返回引导文案而非静默执行。
+2. **让 AI 能离线**。MNN / llama.cpp 两个本地推理引擎编译进 APK，配合本地 STT、本地 TTS、本地 RAG 与应用内 Ubuntu 24.04 Linux 沙箱（proot），断网也能完成大部分任务。
+3. **让 AI 能跨应用**。通过 **ACI**（Agent Capability Interface）—— 一套同设备、基于 AIDL Binder、无 Root 的本地协议 —— 任意 App 都能把自己暴露成「可被 AI 调用的能力」，由 Zorv AI 的 LLM 自动编排。
+
+设计主线是 **Tool-first（一切皆工具）**：Agent 拥有的每一项能力都表达为一个 `QuroTool`（`name` / `description` / `parametersJson` / `run`），由 `QuroToolRegistry` 集中注册。LLM 只需看注册表就能发现并调用任意工具；新增能力 = 实现接口 + 一行注册，无需改任何接线代码。
+
+---
+
+## 开源地址 · Open Source
+
+> **本项目完全开源，多平台托管** · GitHub：[github.com/Quor-a/ZorvAI](https://github.com/Quor-a/ZorvAI) ｜ Gitee：[gitee.com/ZorvAI/ZorvAI](https://gitee.com/ZorvAI/ZorvAI) ｜ GitLab：[jihulab.com/quor-a-group/ZorvAI](https://jihulab.com/quor-a-group/ZorvAI)
+>
+> **🔌 受控端浏览器（ZorvAI 浏览器）已独立开源** · GitHub：[github.com/Quor-a/ZorvBrowser](https://github.com/Quor-a/ZorvBrowser)
+>
+> **🤖 5 个官方 ACI 受控端 App（天气 / 文档 / 终端 / 构建 / 文件）已独立开源**，能力清单见 [设备控制 / ACI](./docs/features/device-control/README.md)。
+>
+> - 📦 最新 Release（免登录下载）：[github.com/Quor-a/ZorvAI/releases](https://github.com/Quor-a/ZorvAI/releases)
+> - 🧩 **[APK 级插件开发手册](./docs/PLUGIN_DEV_GUIDE.md)** —— 要给 Zorv AI 加新工具 / 新 ACI 能力 / 新界面 / 新指令，从这里开始
+> - 🧩 ACI 核心库 AAR：随 Release 提供 `aci-core-release.aar`
+> - 📖 ACI 开发者手册：[docs/ACI_DEVELOPER_GUIDE.md](./docs/ACI_DEVELOPER_GUIDE.md)
+> - 🐛 问题反馈：[github.com/Quor-a/ZorvAI/issues](https://github.com/Quor-a/ZorvAI/issues)
+
+---
+
+## 功能亮点 · Features
+
+| 能力域 | 关键能力 |
+|--------|----------|
+| **对话 UI（Compose）** | ChatScreen 对话框、PersonaBar 人格卡、PermissionModeBar（「AI 自动保存记忆」+「深度思考」并排胶囊）、对话框内 **IDE 能力入口**（代码编辑器 / 终端 / 工具箱 / 文件，经输入框「+」菜单与 `ui_open_*` 唤起）、**支持 7 种编程语言**、**```mermaid 围栏即画即渲染**、**AI 自写代码运行（`run_code`，html 网页工件内联预览）**、回到底部浮动按钮、全屏预览、Markdown 与代码块渲染 |
+| **Agent 核心** | 多会话隔离（`liveBuffers`）、种子快照（`convBase`）、显示刷新闸门（`canUpdateDisplay`）、多轮 `[第N轮]` hidden 标记防串台、工具注册表（`QuroToolRegistry`，总注册 235 / 每轮常驻下发 151）、技能系统（`QuroSkill` → 注册为 `skill__{name}` 工具） |
+| **工具 / 能力层** | **235 个内置工具**（常驻下发 151，其余经 `tool_router` 按需 `get_schema`）：无障碍 `input_text` / `tap_screen` / `read_screen`、文件读写、**L1–L5 特权执行**、`cms_*` 模块、Agent 键盘 `ai_type_text` / `ai_press_enter`、定时任务、记忆工具、知识库 RAG、文档处理 |
+| **离线 LLM 引擎** | 内置 **MNN / llama.cpp** 本地推理（`QuroLocalEngineNative`），支持流式、`<think>` 思考段流式上屏、本地工具调用、会话常驻复用 |
+| **特权层 L1–L5** | 无障碍 → Shizuku（uid 0/2000）→ 设备管理员 → ROOT（su）→ 应用内 Linux（proot + Ubuntu 24.04）。其中 **L1–L4 由 `PrivilegeLevel` 枚举承载**（系统权限），**L5 不在枚举内**，由 Linux 环境是否就绪决定 |
+| **终端 / Linux 沙箱** | 完整终端模拟器：proot + Ubuntu 24.04 ARM64 真实用户空间；PTY 伪终端（`/dev/ptmx` + `fork/exec`）；前台服务保活（specialUse，息屏/切 App 不被杀）；ACI 跨进程 26 个能力（终端服务单一入口 + `action` 分发）；4 种 IPC 接入（ContentProvider / Deep Link / Intent / BroadcastReceiver）；多会话管理 |
+| **墨语言 Mo（独立运行时）** | 内置 **墨语言 v1.165.0** 完整工具链（moc / molink / mols / modb / dwmo / mo2c / mo2x / seed） + aarch64 静态 qemu，**全部零依赖、不经 Ubuntu/proot/终端**；支持编译运行、包管理（mo.toml + deps + mo.lock，免 git 走 tarball + 4 级镜像回退）、依赖图分析、源码读写（AI 可直接修 bug）；socket 直通 Android 网络栈，可跑 HTTP 服务端 |
+| **DeepSeek Harness** | 内置完整 dsh 0.2.1-rc.2（Node 26 bionic 运行时 + 全量插件包 + 自带界面），AI 可通过 headless 通道把整套 agent 工作流外包给它 |
+| **MCP** | MCP 客户端（WebSocket / HTTP 传输）、应用内本地 MCP 服务，可由 AI 部署/调用、**MCP-ACI 桥接** |
+| **引擎 / 运行时** | CMS 引擎共享运行时（NODE / PYTHON / SSH / JAVA / RUST / GO）、CMS v2 模块、内置浏览器（Android WebView 运行时）、本地语音 STT / TTS |
+| **IM 通道** | 飞书（WebSocket）/ QQBot（官方 WS）/ 微信 iLink（HTTP 长轮询 35s） |
+| **语音** | 多供应商 TTS（EDGE_TTS / OPENAI_COMPAT / MINIMAX / SILICONFLOW / 阿里云 等）、端侧流式 STT（`sherpa-ncnn` streaming transducer，内置 5 档 18MB–141MB）、语音悬浮球 |
+| **知识 / 记忆 / 人格 / Bot** | 向量语义 RAG 知识库、记忆库、人格/灵魂配置、多通道机器人（QQ / 飞书 / 微信 / 本地） |
+| **可视化弹窗 & 询问** | **可视化弹窗**（`visual_popup` / `visual_custom_popup`）；**可视化询问**（`visual_question` / `visual_action`）：AI 遇到模糊命令或缺少信息时强制弹出选择题/输入框，禁止猜测 |
+| **多语言运行器** | `QuroLanguageRunner`：对话框内 **7 种编程语言**（JavaScript、Python、HTML、JSON、CSS、XML、C/C++/Java）的检测、运行与渲染；**Python 3.14 原生引擎（PyEngine）**：端侧 CPython 3.14 + 完整标准库，配 Scripting 沙箱（`SandboxRuntime` + `HostApiDispatcher` + `GitHostApi` + `TsTranspiler`） |
+| **生成式界面（两套并存）** | ① **Web 应用**（`miniapp`）：WebView 运行时（`MiniAppEngine` + `native.*` 原生桥）；② **内置 GenUI Agent**（`genui_agent_open`）：GenUI JSON DSL → 原生 Compose 组件（530+ 组件），独立全屏应用。（旧的第三套「对话内 GenUI 画布 `genui_open`」已于 v1.0.96 随 `genui` 模块一并删除） |
+| **可视化组件** | `ui_widget` 工具：**60+ 种可交互组件**直接融进聊天气泡，支持 `command` 语法触发动作；**动态 UI（```quro-ui 围栏）**：AI 写组合式 JSON DSL，原生渲染成体系的交互界面 |
+| **可视化编程** | **Mermaid 图表离线渲染**：流程图 / 时序图 / 状态机 / 类图 / 思维导图，支持全屏预览、SVG 导出、五种主题 |
+| **AIP 对话框文档排版** | **AIP 排版引擎**（AI Presentation Protocol）：AI 输出结构化信封（```aip 围栏 / `aip_compose` 工具），对话框原生渲染**长文档 / PPT 演示 / 思维导图**卡片；支持 doc↔deck↔mindmap 互转、导出 docx/pptx/md、全屏预览、演示放映、四级容错降级 |
+| **APK 级插件框架** | 装一个 APK 就给 AI 加能力；**14 种扩展点**（工具 / ACI 能力 / 界面 / 指令 …），AI 可通过唯一工具 `apk_plugin` 直接操控插件 |
+| **国际化** | **11 种界面语言**；AI 回复语言由统一注入器约束，覆盖主对话（云端 + 本地）、语音球、视频通话、GenUI Agent、IM 机器人、子智能体六条路径 |
+
+---
+
+## 架构总纲 · Architecture
+
+### 分层视图
+
+```mermaid
+flowchart TB
+    subgraph UI["UI 层 · Jetpack Compose"]
+        A1["ChatScreen 对话框"]
+        A2["PersonaBar 人格卡"]
+        A3["PermissionModeBar · 权限胶囊"]
+        A4["Markdown / 代码块渲染 · 全屏预览"]
+        A5["终端 / 浏览器 / 媒体 / 文档 / 技能 / 知识库 等二级屏"]
+    end
+    subgraph CORE["Agent 核心"]
+        B1["QuroChatViewModel · 多会话隔离"]
+        B2["QuroAssistant · ReAct 主循环（一趟 = 一条完整 ReAct）"]
+        B3["QuroConversation · 上下文组装与压缩"]
+        B4["QuroToolRegistry · 总注册 235 / 常驻下发 151"]
+        B5["LongHorizonOrchestrator · 策划→闸门→带记忆重规划"]
+        B6["QuroRunCheckpoint · 每轮工具调用落盘"]
+    end
+    subgraph INFER["推理层"]
+        I1["QuroLlmClient · 云端（含上游拒答回执归一化）"]
+        I2["QuroReasoningControl · 思考协议编译"]
+        I3["QuroToolCallRepair · 端侧容错解析"]
+        I4["QuroLocalEngineNative · MNN / llama.cpp"]
+    end
+    subgraph TOOLS["工具 / 能力层 · core/tools"]
+        C1["launch_app"]
+        C2["无障碍 input_text / tap_screen / read_screen"]
+        C3["cms_* 模块调用"]
+        C4["Agent 键盘 ai_type_text / press_enter"]
+        C5["scheduler 定时任务"]
+        C6["memory_* 记忆工具"]
+        C7["knowledge_* RAG 知识库"]
+    end
+    subgraph PRIV["特权 / 权限层 · L1–L5"]
+        D1["L1 无障碍 AccessibilityService"]
+        D2["L2 Shizuku uid 0/2000"]
+        D3["L3 设备管理员 DeviceAdmin"]
+        D4["L4 ROOT su"]
+        D5["L5 应用内 Linux proot + Ubuntu 24.04"]
+    end
+    subgraph TERM["终端子系统 · core/terminal"]
+        T1["QuroTerminalController"]
+        T2["QuroShellSession (PTY)"]
+        T3["QuroLinuxEnv (proot+Ubuntu)"]
+        T4["前台服务 KeepAlive"]
+        T5["ACI 受控端 + 4 种 IPC"]
+    end
+    subgraph ENGINE["引擎 / 运行时层"]
+        E1["CMS 引擎 NODE / PYTHON / SSH / JAVA / RUST / GO"]
+        E2["内置浏览器 WebView 运行时"]
+        E3["语音 sherpa-ncnn 流式 STT / 多供应商 TTS"]
+        E4["MNN / llama.cpp 离线 LLM"]
+    end
+    subgraph IM["IM 通道层"]
+        F1["飞书 WebSocket"]
+        F2["QQBot 官方 WS"]
+        F3["微信 iLink HTTP 长轮询"]
+    end
+    subgraph DATA["数据 / 持久化"]
+        G1["QuroConversationStore 会话仓库"]
+        G2["启动自愈 DATA_REPAIR 去重"]
+        G3["诊断日志 Download/QuroAI_logs/"]
+    end
+
+    UI --> CORE
+    CORE --> INFER
+    INFER --> CORE
+    CORE --> TOOLS
+    TOOLS --> PRIV
+    TOOLS --> TERM
+    TOOLS --> ENGINE
+    PRIV --> TERM
+    TERM --> ENGINE
+    CORE --> IM
+    CORE --> DATA
+```
+
+数据流自上而下：UI 委托给 Agent 核心，核心调用推理层；推理层返回文本或工具调用，工具按合适的特权层级或引擎运行时执行；结果回流进上下文，直到模型给出最终答复。持久化与 IM 通道作为独立子系统并行存在。
+
+核心不是「一条 ReAct 循环」，而是套在 ReAct 外面的一层**任务级闭环**：`QuroAssistant` 把一整趟 ReAct 抽成 `reactPass()`，交给 `LongHorizonOrchestrator.runTask` 驱动 ——
+
+```
+策划（TaskPlanner）→ 执行一趟 ReAct → 交付闸门（DeliverabilityJudge 判产物原文）
+      ↑                                        │
+      └──── 不可交付：带打回原因 + 建议 + 失败步骤重新策划 ←┘
+                        （超 maxIterations 按最后一趟强制交付）
+```
+
+闸门判定读的是**产物原文**而非摘要，`startsWith("工具执行失败")` 这类启发式才真正成立；重规划上下文由编排器自己累积（打回原因、失败步骤、外部工具失败明细），不是占位符。持久化与 IM 通道作为独立子系统并行存在。
+
+### 各层职责
+
+| 层 | 入口 | 职责 |
+|----|------|------|
+| **UI** | `ui/ChatScreen.kt` 等 | 渲染对话、气泡、思考卡、工具块、富组件；所有二级功能屏 |
+| **Agent 核心** | `core/QuroAssistant.kt` | ReAct 主循环（一趟 = 一条完整 ReAct）、轮次与死循环防护、上下文组装、工具调度、子智能体；**工具结果真信封**（`QuroToolResult`）统一返回文本 |
+| **任务级编排** | `core/agent/orchestration/` | `LongHorizonOrchestrator` 驱动「策划 → 执行 → 交付闸门 → 带记忆重规划」；`DefaultTaskPlanner` 出方案；`HeuristicDeliverabilityJudge` + 模型判可交付性。**闸门与策划是 Agent 固有环节，不是可关开关** |
+| **推理** | `core/network/` | 云端请求、四家思考字段互斥编译、端侧 MNN / llama.cpp 引擎、工具调用容错解析、上游拒答回执归一化（不再把 `The request was rejected…` 原样糊给用户） |
+| **工具** | `core/tools/` | 235 个工具的注册、发现、护栏、执行与失败回喂；**只读工具并发执行，有副作用的严格串行**；`QuroToolRouter.PROGRESSIVE` 渐进式披露开关（默认关，见 KDoc 代价） |
+| **容错** | `core/tools/` | `QuroRunCheckpoint` 每轮落盘（已接进工具轮）；`onModelCorrect` 修正通道（`CORRECT` / `ROLLBACK` / `ESCALATE` 三档）；`FailurePolicy` 决定失败是回喂重试还是直接终止 |
+| **记忆** | `core/memory/` | 记忆认知分型：**语义 / 情节 / 程序 / 工作**四类，不同类型走不同检索与写入策略 |
+| **特权** | `QuroPrivilegeManager` | L1–L4（`PrivilegeLevel` 枚举）分级升权 + L5（应用内 Linux，由环境就绪状态把关），统一审计；未授权返回引导文案 |
+| **终端** | `core/terminal/` | PTY 会话、proot Linux 环境、前台保活、ACI 与 4 种 IPC |
+| **引擎** | `cms` / `browser` / `speech` / `llm` | 运行时供给、网页渲染、语音、离线推理 |
+| **IM** | `im/` | 飞书 / QQ / 微信 三条通道 |
+
+### 设计模式
+
+- **Tool-first / Registry（一切皆工具）**：所有能力统一为 `QuroTool`，新增能力 = 实现接口 + 一行注册。
+- **ReAct Loop（推理-行动循环）**：「LLM 思考 → 选工具 → 执行 → 观察 → 再思考」直到任务完成；工具结果以卡片回流对话。
+- **Deliverability Gate（交付闸门）**：模型给出候选答复后先判「能不能交付」，不可交付则**带记忆重新策划**再跑一趟，而不是把失败回执直接抛给用户。闸门判定输入是产物原文，不是摘要。
+- **Least-Privilege Tiers（最小特权分层）**：L1–L5 逐级升权，**未授权即返回引导文案而非静默执行**。
+- **Concurrent Reads, Serial Writes（只读并发，有副作用串行）**：`QuroTool.readOnly` 默认 `false`；只读工具（14 个白名单）在一轮内并发执行以压缩延迟，有副作用的工具严格串行保序。
+- **Cognitive Memory Typing（记忆认知分型）**：语义 / 情节 / 程序 / 工作四类分型存储，程序性记忆不与情景性记忆混在一个检索池里。
+- **Strategy（引擎可替换）**：云端多供应商与本地 MNN / llama.cpp 共用一套 `onToken` 流式接口，离线/在线对上层透明。
+- **SDUI（Server-Driven UI）**：ACI 控制台由受控端下发快照 JSON、控制端纯本地渲染，零网络依赖。
+
+> 每层的完整技术架构（分层细节、关键类、时序、设计决策与踩坑）见 **[架构分文档](#架构文档architecture-docs)**。
+
+---
+
+## 功能地图 · Feature Map
+
+| 模块 | 一句话 | 完整文档 |
+|------|--------|----------|
+| **智能对话核心** | 消息流、流式输出、思考卡、附件、对话框 IDE、可视化弹窗/询问 | [chat](./docs/features/chat/README.md) |
+| **内置技能 Skills** | 67 个内置技能（`assets/skills/zorv/manifest.json` 实测），首次启动全部播种（默认仅 design-studio 5 个启用），可注册为 `skill__{name}` 工具供 AI 调用 | [skills](./docs/features/skills/README.md) |
+| **MCP** | MCP 客户端 / 本地服务 / MCP-ACI 桥接 | [mcp](./docs/features/mcp/README.md) |
+| **离线 LLM 引擎** | MNN / llama.cpp 端侧推理，模型导入、加载、常驻会话、本地工具调用 | [offline-llm](./docs/features/offline-llm/README.md) |
+| **终端 & Linux 沙箱** | proot + Ubuntu 24.04 ARM64，多会话、SSH/VNC、息屏保活 | [terminal](./docs/features/terminal/README.md) |
+| **语音 / 媒体 / 浏览器 / 文档** | 多供应商 TTS、端侧流式 STT（sherpa-ncnn）、内置浏览器（WebView）、文档处理 | [voice-media](./docs/features/voice-media/README.md) |
+| **设备控制 / Shizuku / ACI** | L1–L5 特权层、ACI 受控端生态、ACI 控制台与 HTTP 传输 | [device-control](./docs/features/device-control/README.md) |
+| **知识库 / 记忆 / 人格 / 定时** | 向量语义 RAG 知识库、记忆库（语义/情节/程序/工作四类）、人格/灵魂配置、定时任务与日程 | [knowledge-memory-persona](./docs/features/digital-human/README.md) |
+| **多角色集群** | 一个不可替换的「主持」驱动多角色协作：定验收 → 拆解 → 点名 → 产出 → 裁决 → 收敛。集群即 9 个 `cluster_*` 工具（`cluster_start` / `cluster_status` / `cluster_roles` / `cluster_models` / `cluster_enroll` / `cluster_remove_role` / `cluster_bind_model` / `cluster_host_config` / `cluster_abort`），各角色可绑**不同厂商的模型、各走自己的 API 通道**；角色发言实时投影进本对话框。配置入口：设置 → 多角色集群 | [cluster](./docs/features/cluster/README.md) |
+| **APK 级插件框架** | 14 种扩展点，装 APK 即给 AI 加能力 | [extensibility](./docs/architecture/extensibility/README.md) |
+| **国际化（11 语言）** | 字符串键体系、AI 回复语言注入、翻译流水线 | [i18n](./docs/architecture/i18n/README.md) |
+
+---
+
+## 系统要求与从源码构建
+
+### 系统要求
+
+- **Android 8.0+（API 26+）** 设备
+- **开发机**：JDK **17+**（AGP 8.13 要求）、Android SDK（compileSdk 36 / minSdk 26 / targetSdk 34）、Gradle（用仓库自带 wrapper `./gradlew`）
+- **离线引擎原生编译需要 NDK**（side-by-side）：用于编译 MNN / llama.cpp 原生库
+
+### 构建命令
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/Quor-a/ZorvAI
+cd ZorvAI
+
+# 2. 准备环境
+#    - 安装 JDK 17+，并在 local.properties 配置 sdk.dir=/path/to/Android/Sdk
+#    - 确保 Android SDK 中已安装 NDK
+
+# 3. 构建 debug 包
+./gradlew assembleDebug
+#    产物：app/build/outputs/apk/*/debug/app-*-debug.apk
+
+# 4. 构建 release 包（需自备签名配置）
+./gradlew :app:assembleFullRelease
+#    产物：app/build/outputs/apk/full/release/app-full-release.apk
+
+# 清理
+./gradlew clean
+```
+
+> 💡 Release 签名：`keystore.properties` 位于**项目根**（非 `app/`），alias `zorvai`。
+>
+> 💡 若 `./gradlew` 报「没有主清单属性 / 找不到主类」，是 `gradle-wrapper.jar` 的 MANIFEST 缺失 `Main-Class`，需修复 wrapper 后再构建。
+
+---
+
+## 排查与故障处理 · Troubleshooting
+
+| 现象 | 说明 / 处理 |
+|------|-------------|
+| **构建耗时较长** | 首次构建需编译 MNN / llama.cpp 原生库，CPU 满载、落盘较少属正常；`app/.cxx` 缓存存在时增量构建很快。 |
+| **`./gradlew` 无法启动** | wrapper jar 缺失 `Main-Class` 时需修复；或改用本机已安装的 Gradle 直接构建。 |
+| **Shizuku 相关能力不可用** | 必须先打开 Shizuku App 并启动其服务 / 完成配对，再在 Zorv AI 中授权；Shizuku 未运行时 L2 通道不会启用。 |
+| **ROOT 模式命令不执行** | ROOT 模式走 `sh -c` 执行，需确认设备已 root 且已授予 su 权限。 |
+| **应用内 Linux（L5）无法运行** | 首次进入终端会自动解压内置 rootfs（`proot` 随包内置，Ubuntu rootfs 已打包进 APK **无需联网下载**）；若解压被中断（App 被杀 / 设备过慢）导致环境异常，重启 App 会自动清掉半截 rootfs 重装。 |
+| **终端息屏 / 切 App 后被杀** | 检查通知栏是否显示「Zorv AI 终端运行中」；Android 14+ 需要 `FOREGROUND_SERVICE_SPECIAL_USE` 权限。 |
+| **离线对话不可用** | 离线 LLM 随发布包内置；若所用构建不含离线引擎原生库则会提示未接入。 |
+| **网页 / HTML 预览不显示** | 内置浏览器基于 `android.webkit.WebView`：请确认系统 WebView 已安装且为较新版本（开发者选项 → WebView 实现）。 |
+| **本地语音识别不可用** | 本地 STT 用 `sherpa-ncnn` **流式 transducer** 模型（非 onnx/Whisper），内置 5 档：中文 22MB（推荐）/ 中英双语 18MB / 英文 37MB / 中英双语 141MB / ConvEmformer 27MB，首次使用需下载并解压到指定目录；独立 `:asr` 进程承载，崩溃不影响主进程。 |
+| **会话出现重复或异常** | 启动自愈 `DATA_REPAIR` 会在启动时去重清洗，重启 App 即可。 |
+| **需要诊断日志** | 日志写到手机公共目录 `Download/QuroAI_logs/`，无需 adb 即可取出。 |
+
+---
+
+## 终端 · Ubuntu 24.04
+
+终端内置**一套完整 Ubuntu**（proot，免 root，运行在 App 私有目录，不是模拟器也不是虚拟机）：
+
+| 项 | 说明 |
+|---|---|
+| 发行版 | Ubuntu 24.04 noble · aarch64 |
+| 包管理 | `apt` / `pip` / `npm` |
+| 内置资产 | `assets/ubuntu-noble-aarch64-pd-v4.18.0.tar.xz`（约 64MB），随 APK 发布，首次进终端自动解压，不依赖网络 |
+| 目录 | `installed-rootfs/ubuntu` |
+| 工具链 | python3 / gcc / node / java / git / make 等完整 Debian 系工具链 |
+
+**AI 如何操控**：
+
+- `terminal(action="status")` → 返回环境状态与就绪度
+- `terminal(action="exec", command="...")` → 在 Ubuntu 内执行命令
+
+> ℹ️ **LANXIU（澜岫）已移除**：v1.2.0 起内置资产从 451MB 降至 64MB（删除 LANXIU 主 rootfs 389MB 与 VNC 增量包 9.9MB），终端只保留 Ubuntu。设备上历史保存的 `lanxiu` 偏好会自动回落 Ubuntu，不会指向已删除的 rootfs。
+>
+> **proot 共性约束**：命令直接用、别加 sudo（已映射为 root）；无 `/lib/modules`，别试 `modprobe`；不要在 rootfs 内嵌套启动第二套 proot。
+
+---
+
+## 墨语言 Mo · 内置独立运行时
+
+ZorvAI 内置 **墨语言（Mo）v1.165.0** —— 一门编译到原生机器码的静态类型系统级语言，编译器用墨语言自身写成，完成 Stage 0→1→2→3 自举闭环。
+
+### 关键设计：完全独立，不依赖 Ubuntu / proot / 终端
+
+墨语言工具链（`moc` / `molink` / `mols` / `modb` / `dwmo` / `mo2c` / `mo2x` / `seed`）全部是 **x86_64 静态可执行（ELF `DT_NEEDED = 0`）**，随包内置的 `qemu-x86_64-static` 是 **aarch64 静态可执行**，两者零依赖 —— App 直接用 `ProcessBuilder` 进程调用，**不走 proot、不走终端、不需要联网装任何东西**。
+
+| 项 | 说明 |
+|---|---|
+| 内置资产 | `assets/mo-pkg.pack`（3.3MB，解压后 27.5MB / 756 文件） |
+| 运行时目录 | `filesDir/moyu/`（`bin/qemu-x86_64-static` + `mo/` 语言本体） |
+| 入口 | 工具中心 → 墨语言 Mo |
+| 语言本体 | 含 `src/compiler.mo` 编译器源码、`lib/` 标准库、`examples/` 示例、`docs/` 文档、`tests/` 测试 —— AI 可直接读写源码修 bug |
+
+### 能力
+
+- **编译运行**：`moc <src.mo> [out]`，编写 → 编译 → 运行 → 改错闭环
+- **包管理**（对齐官方 `tools/mopkg.sh` 协议，但**不需要 git**）：`mo.toml` 声明依赖 → 把 git 地址换算成托管站 tarball 下载（GitHub `codeload` / Gitee `archive`，含 **4 级镜像回退**：直连 → ghfast → gh-proxy → ghproxy）→ 解压到 `deps/<name>/` → 写 `mo.lock`；支持 `install` / `fetch` / `list` / `remove` / `verify` / `tree`
+- **依赖解析**：编译前自动把 `deps/*/*.mo` 与 `mo/lib/*.mo` 同步到源目录（moc 的真实 import 机制是「找当前目录」，**不支持 `-I` 参数**）
+- **构建依赖图**：递归扫 `import` → 拓扑排序 → 缺失与循环检测
+- **网络**：socket 经 qemu 直通 Android 内核，直接使用 ZorvAI 的网络（仅需 `INTERNET` 权限）。标准库 `lib/net.mo` 提供 `tcp_listen` / `tcp_accept` / `tcp_connect`；示例含 `httpd.mo`（HTTP 服务端）与 `httpto.mo`（带慢连接超时）。**无 TLS/HTTPS**
+- **AI 工具 `moyu`**：`setup` / `compile` / `run` / `build_run` / `exec` / `read` / `write` / `list` / `diagnose` / `graph` / `pkg_init` / `dep_install` / `dep_fetch` / `dep_list` / `dep_tree` / `dep_verify` / `net_diag` / `test` / `aifix` / `resolve` / **`native_build`** / **`native_run`** / `native_targets` / `cc_diag` / `native_setup`
+
+### AArch64 原生目标（不经 qemu）
+
+墨语言的官方编译器 `moc` 只有 x86_64 一个代码生成后端，在 Android 上要靠 qemu 逐条指令翻译执行。
+ZorvAI 额外接上了官方 `mo2x` 转译器的 `cfs-aarch64` 目标，让 `.mo` 直接产出 **Android 能原生执行的
+ARM64 静态 ELF**：
+
+```
+.mo ──mo2x(cfs-aarch64)──▶ freestanding C ──zig cc──▶ ARM64 静态 ELF ──▶ 原生 execve
+                              内联 svc #0、不链 libc
+```
+
+ZorvAI 只装 `arm64-v8a`，Android 的 ABI 就是 arm64、内核系统调用号与 Linux aarch64 一致，所以产物
+**零翻译、零 libc、零 Ubuntu**。`mo2x` 那一步仍然要 qemu（它本身是 x86_64 程序），之后的编译与执行
+全部原生 —— 这一步没有替代方案，因为转译器是预编译的 x86_64 二进制。
+
+**它不是 Linux 内核。** 产物是普通用户态系统程序：自建 `_start`、不链 musl/glibc、不需要
+`/system/bin/linker64`，只发内核系统调用。
+
+| 目标 | 产物形态 | 在哪执行 |
+|---|---|---|
+| `cfs-aarch64`（默认） | ARM64 静态 ELF（`ET_EXEC`、无 `PT_INTERP`） | **Android 原生执行** |
+| `cfs` | x86_64 静态 ELF | 经 qemu 翻译执行 |
+| `kern-aarch64` | ARM64 裸机镜像（PL011 UART，无系统调用） | 只能模拟器跑；Android 不能裸机启动 |
+
+非 PIE（`ET_EXEC`）是必需的：`-nostdlib` 下没有任何启动代码能做自加载重定位，静态 + PIE 会直接崩。
+
+可直接构建的系统级程序：`examples/uspace2.mo`（层次化 VFS + 24 条命令的 shell + 带 SipHash 签名的
+包管理 + 状态持久化，约 2000 行）、`examples/andromo.mo`（官方 Android 原生示例）。两者都带
+`mo-target: cfs-aarch64` 标记。UI 入口：**工具中心 → 墨语言 Mo → AArch64 原生**。
+
+### Android 执行限制与 memfd 启动器
+
+`targetSdk = 34` 下，App 私有数据目录在 **SELinux** 层面禁止 `execve` —— 把 ELF 写到 `filesDir`
+再 `ProcessBuilder` 必然拿到 `EACCES`，与文件权限、`chmod` 无关。这直接影响 qemu 与所有动态产物。
+
+ZorvAI 的做法是一个随包内置的 aarch64 启动器：以 `libmoexec.so` 打进 `jniLibs`，安装后落在
+`nativeLibraryDir`（App 内唯一挂载为可执行的目录），它把目标 ELF 读进 memfd（匿名内存文件、没有路径），
+再 `execveat(AT_EMPTY_PATH)` 执行，绕开"按路径检查"的那道限制。
+
+三级退化，每一步失败都把真实原因带回界面，不做静默降级：
+
+1. `execveat(memfd, "", …, AT_EMPTY_PATH)` —— 内核 3.19+，最干净
+2. `execve("/proc/self/fd/N", …)` —— 老内核走 fd 软链
+3. `execve(原路径, …)` —— 目标目录本身可执行时
+
+这条通路同时修正了既有路径：`filesDir` 里的 `qemu` 也改走启动器（此前直接 `ProcessBuilder`
+在 targetSdk ≥ 29 的设备上必然失败）。
+
+### Android 适配要点
+
+- 运行时解压用**纯 Java 实现**（`GZIPInputStream` + 内置 tar 解析），不依赖 busybox，也不依赖终端环境是否初始化
+- 16KB 页兼容：qemu 的 `PT_LOAD p_align = 64KB` ≥ Android 15 的 16KB 要求
+- 退出码诊断：`137` 内存不足被回收 / `159` seccomp 拦截系统调用 / `139` 段错误 / `134` 断言失败
+
+---
+
+## DeepSeek Harness · 内置完整 agent 产品
+
+ZorvAI 内置了 **DeepSeek Harness（dsh）0.2.1-rc.2** 的完整运行时 —— 它是 DeepSeek 官方的
+agent harness，**自带完整的界面、组件、会话与插件体系**，不是 ZorvAI 的一个子功能面板。
+
+### 为什么需要专门做一层运行时
+
+dsh 是 Node.js 应用（`dsh web` 起 HTTP 服务 + 自带前端）。要让它在 Android 上跑，有三道坎，
+每一道都必须真正解决，不是加个参数就行：
+
+| 坎 | 事实 | 做法 |
+|---|---|---|
+| Node 运行时 | Node 官方的 linux-arm64 构建链接 **glibc**，Android 是 **bionic**，直接 exec 跑不起来 | 用 Termux 维护的 arm64 构建（node **26.12.1**，bionic 链接） |
+| 动态库 | node 的 `DT_NEEDED` 除系统库外还要 `z / cares / sqlite3 / ffi / crypto / ssl / icu×2 / libc++_shared` | 用 `DT_NEEDED` 闭包精确求解后随包内置（10 个库，45.5MB），启动时 `LD_LIBRARY_PATH` 指路 |
+| 可执行权限 | `targetSdk ≥ 29` 的 App 私有目录被 SELinux 禁止 `execve` | node 由 `nativeLibraryDir` 里的 memfd 启动器拉起（`libmoexec.so`） |
+
+**还有一处原生模块要重编**：`node-pty`（dsh 的终端/子进程插件用它）官方只提供 glibc 预编译，
+依赖 `libc.so.6` / `ld-linux-aarch64.so.1`，Android 加载不了。ZorvAI 自带了它的 bionic 编译版本：
+
+- `pty.cc` 需要 `<pty.h>`、`openpty(3)`、`forkpty(3)` —— **bionic 从来没实现过**，但底层原语
+  （`posix_openpt` / `grantpt` / `unlockpt` / `ptsname` / `TIOCSCTTY`）都有，于是用原语把两个
+  便利函数重建出来（`tools/dsh-runtime/pty_shim.h`），NDK 交叉编出 `pty.node` + `spawn-helper`
+- 产物验证：`DT_NEEDED = liblog / libc++_shared / libm / libdl / libc`，**无 glibc**
+
+### 资产与体积
+
+| 项 | 说明 |
+|---|---|
+| 内置资产 | `assets/dsh-runtime.pack`（**89.8MB**，tar.xz；解压后 627.9MB / 48790 文件） |
+| 运行时目录 | `filesDir/dsh/`（`bin/node` + `lib/` + `dsh/node_modules`） |
+| 用户数据 | `filesDir/dsh/home`（`DSH_HOME`：会话、附件、设置、凭据都在这里） |
+| 工作区 | `filesDir/dsh/workspace` |
+| 解压方式 | nativeLibraryDir 的 `libbusybox.so` 先 `xz -d` 再 `tar xf`（纯 Java 没有 xz 解码器） |
+| 入口 | 工具中心 → DeepSeek Harness |
+
+体积上做过的取舍：`node_modules` 按 **linux-arm64** 平台安装（自动跳过 230MB 的 win32 二进制，
+含 182MB 的 `libreoffice-kit-win32-x64`）；删掉 glibc 不可用的 `sherpa-onnx-linux-arm64`（38.4MB，
+语音插件的本地 STT 在 Android 上不可用）；`node-pty` 的其他平台 prebuilds 全删。
+
+### 两条使用路径
+
+**给人用 —— 它自己的界面**：`start` 起服务后，WebView 加载 `http://127.0.0.1:3080`。
+会话、插件、设置、主题全部由 harness 自带前端负责，**App 侧不重做它的 UI，也不裁剪它的功能**。
+服务只绑 `127.0.0.1`（上游拒绝通配地址，因为绑定所有网卡等于把远程代码执行暴露到局域网）。
+
+**给 AI 用 —— headless 通道**：`dsh --profile headless <task>` 是「答一个任务就退出」的一次性入口，
+直接跑 core Agent/Session，**没有 Host、没有 HTTP、没有浏览器层**。ZorvAI 的 `harness` 工具用它
+把「需要一整套 agent 工作流」的活儿外包出去：harness 自己规划、读文件、跑命令、改代码，
+答案走 stdout 带回来。支持 `--session-id` 续用会话、`--json` 输出 NDJSON 事件流。
+
+### AI 工具 `harness`
+
+`setup` / `start` / `stop` / `restart` / `status` / `logs` / `url` / **`task`** / `set_key` / `diag`
+
+模型凭据：harness 有自己的模型配置（`DEEPSEEK_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY`，
+或在它自己的界面里写 `settings.yaml`），**与 ZorvAI 的模型配置互不相干**。`set_key` 存的 key 会在
+`start` 与 `task` 时注入环境变量。
+
+## 下载 / APK · Download
+
+[![Release](https://img.shields.io/github/v/release/Quor-a/ZorvAI)](https://github.com/Quor-a/ZorvAI/releases)
+
+- 🟢 **[v1.2.1 Release](https://github.com/Quor-a/ZorvAI/releases)**（Release 签名，**最新**）
+
+  **开源协议全量排查（11 功能模块 · 117 条第三方许可）+ 无障碍服务合并 + 设置-关于-开源许可证数据驱动页面**
+
+  - **开源协议全项目排查**：覆盖 LSPosed 模块、USB/无线调试、DeepSeek Harness、墨语言、GenUI Agent、APK 插件、工具包运行时、构建台、节点编辑器、小程序、可视化编程等 11 个功能模块，117 条第三方许可按功能归类，统一生成数据源 `app/src/main/assets/legal/third_party_licenses.json` 与根 `NOTICE`；「设置 → 关于 ZorvAI → 开源许可证」改为数据驱动、按模块展示。
+  - **无障碍服务合并**：原双服务（AI 操控 + 工具）合并为单一无障碍服务，去除重复权限声明。
+  - **GPL 义务披露**：Termux 终端库（libtermux-terminal，GPL-3.0）、dshmobile 内置 Termux 快照（GPL-3.0）、墨语言运行时（proot / Bash / QEMU / Ubuntu rootfs，GPL）按强 Copyleft 要求在本节与 [NOTICE](./NOTICE) 中如实声明。
+
+- 🟡 **[v1.2.0 Release](https://github.com/Quor-a/ZorvAI/releases)**（Release 签名）
+
+  **内置墨语言 Mo v1.165.0 · 移除 LANXIU · 包体积 805MB → 382MB**
+
+  - **墨语言内置独立运行时**：工具链与 aarch64 静态 qemu 随 APK 发布，零依赖、不经 Ubuntu/proot/终端，直接在 App 私有目录进程调用；纯 Java 解压（不依赖 busybox）。
+  - **包管理**：对齐官方 `mopkg.sh` 协议但免 git —— git 地址换算 tarball，含直连/ghfast/gh-proxy/ghproxy 四级镜像回退；`mo.toml` + `deps/` + `mo.lock`，编译前自动同步依赖到源目录。
+  - **网络**：socket 直通 Android 内核，标准库 `lib/net.mo` 提供 TCP，示例含 `httpd.mo` 可现场起 HTTP 服务。
+  - **移除 LANXIU**：删掉 389MB 主 rootfs 与 9.9MB 增量包，APK 805MB → 382MB；历史 `lanxiu` 偏好自动回落 Ubuntu。
+  - **AI 工具 `moyu`**：compile / build_run / graph / dep_install / dep_fetch / net_diag 等 17 个动作。
+
+- 🟡 **[v1.1.8 Release](https://github.com/Quor-a/ZorvAI/releases)**（Release 签名）
+
+  **终端双系统：Ubuntu + LANXIU（澜岫）全面打通**
+
+  - **LANXIU（澜岫）内置**：澜岫 aarch64 rootfs 打包进 APK assets（无需下载），首次进终端自动解压；与 Ubuntu 共用顶部栏切换。
+  - **AI 感知并操控双系统**：`terminal_status` 报告当前发行版与两套就绪度；`terminal_set_distro` 切换；`terminal_exec` 在选中系统执行（LANXIU 走 `runInGuest`，与界面同一 rootfs）。
+  - **LANXIU 开箱即联网**：源 rootfs 烤入 `resolv.conf` / `nsswitch.conf` / CA bundle，`common.sh` 双保险注入 `SSL_CERT_FILE` / `CURL_CA_BUNDLE`，curl / wget 国内外全通。
+  - 修复 LANXIU 首次解压中断导致的半截 rootfs 死锁（`install_rootfs` 强校验 + 180s 兜底超时）。
+
+- 🟢 **[v1.1.6 Release](https://github.com/Quor-a/ZorvAI/releases)**（Release 签名）
+
+  **动态交互界面（zxwidget）渲染/交互缺陷全面修复**
+
+  - **条码/二维码组件修复**：`zx_barcode` 正确路由到新增条码布局（确定性竖条 + 可读文本）；`zx_qr` 重写为确定性伪 QR 矩阵（定位角 + 哈希散点 + 下方可读文本），彻底解决空白问题。
+  - **路由错配纠正**：OVERRIDE 表修正 `zx_barcode→barcode`、`zx_decision→decision`、`zx_topology`/`zx_sankey2→graph`。
+  - **回归体系闭环**：新增敏感空白检测脚本，三道回归闸门（blankcheck / sweep / audit）全绿，A/B 编译器同源 0 漂移。
+
+- 🟢 **[v1.1.5 Release](https://github.com/Quor-a/ZorvAI/releases)**（Release 签名）
+
+  **AI 集群技能全面升级：独立技能引擎 + RAG + 工具主通道**
+
+  - **集群技能使用独立 Skills 架构**：SKILL.md 走标准 skills 文件格式，支持 `dependsOn` / `requiresTools` 字段，可声明技能依赖与工具需求。
+  - **独立 ClusterSkillEngine**：依赖闭包解析、循环依赖检测、工具需求校验、能力感知透传，不再依赖 ZorvAI 内置 skills 格式。
+  - **集群技能接入 RAG 检索**：技能调用时可通过 RAG 查询相关知识，工具调用统一走 ZorvAI 主通道。
+  - **12 个内置集群 SKILL.md 同步更新**，配套 10 个引擎测试用例，全量测试通过。
+  - 同时包含多轮集群验收、能力匹配中英桥梁、工具全开与空产物治理等改进。
+
+  **可靠性**
+
+  - **只读工具并发执行**：`QuroTool.readOnly` 默认 `false`；14 个只读工具白名单在一轮内并发执行以压缩延迟，有副作用的工具严格串行保序。
+  - **工具结果真信封**（`QuroToolResult`）：统一工具返回文本，成功结果不再被套上失败包装。
+  - **`QuroRunCheckpoint` 接入工具轮**：此前已存在但零接线，现在每轮工具调用落盘。
+  - **`onModelCorrect` 修正通道**：`CORRECT` / `ROLLBACK` / `ESCALATE` 三档塌缩已解除，`CORRECT` 命中即交还上层。
+  - **上游拒答回执归一化**：不再把 `The request was rejected…` 原样糊给用户。
+  - **记忆认知分型**：语义 / 情节 / 程序 / 工作四类，不同类型走不同检索与写入策略。
+
+  > ⚠️ **v1.1.1 的更新说明已作废**：那一版宣传的「云端上下文预算三级取值 / 工具结果关键行保留 / 归档诚实化」三层已在 v1.1.2 前的 `af5fe17` **整体回滚** —— 真机反馈显示压缩后 AI 拿到的信息反而更少，出现答非所问与复读。回滚按「先恢复到你动手之前」处理，不再新增任何压缩/截断层。
+
+完整历史版本见 [Releases](https://github.com/Quor-a/ZorvAI/releases)。
+
+---
+
+## 文档索引 · Documentation Index
+
+### 架构文档（Architecture Docs）
+
+| 模块 | 路径 |
+|------|------|
+| **端侧推理**（MNN / llama.cpp 分层 L0–L6） | [docs/architecture/inference-native/README.md](./docs/architecture/inference-native/README.md) |
+| **云端推理**（思考协议 / 工具调用 / 上下文预算） | [docs/architecture/inference-cloud/README.md](./docs/architecture/inference-cloud/README.md) |
+| **工具系统**（235 工具 / 注册表 / 护栏 / 回喂 / 只读并发） | [docs/architecture/tool-system/README.md](./docs/architecture/tool-system/README.md) |
+| **Agent 循环**（ReAct / 任务级闭环编排 / 交付闸门 / 死循环防护 / 子智能体） | [docs/architecture/agent-loop/README.md](./docs/architecture/agent-loop/README.md) |
+| **终端与 Linux 沙箱** | [docs/architecture/terminal-sandbox/README.md](./docs/architecture/terminal-sandbox/README.md) |
+| **UI 与渲染**（AIP / ui_widget / quro-ui / GenUI / MiniApp） | [docs/architecture/ui-rendering/README.md](./docs/architecture/ui-rendering/README.md) |
+| **国际化**（11 语言） | [docs/architecture/i18n/README.md](./docs/architecture/i18n/README.md) |
+| **可扩展性**（插件框架 / ACI / MCP / Skills） | [docs/architecture/extensibility/README.md](./docs/architecture/extensibility/README.md) |
+
+### 功能文档（Feature Docs）
+
+| 模块 | 路径 |
+|------|------|
+| 智能对话核心 | [docs/features/chat/README.md](./docs/features/chat/README.md) |
+| 内置技能 Skills | [docs/features/skills/README.md](./docs/features/skills/README.md) |
+| MCP | [docs/features/mcp/README.md](./docs/features/mcp/README.md) |
+| 离线 LLM 引擎 | [docs/features/offline-llm/README.md](./docs/features/offline-llm/README.md) |
+| 终端 & Linux 沙箱 | [docs/features/terminal/README.md](./docs/features/terminal/README.md) |
+| 语音 / 媒体 / 浏览器 / 文档 | [docs/features/voice-media/README.md](./docs/features/voice-media/README.md) |
+| 设备控制 / Shizuku / ACI | [docs/features/device-control/README.md](./docs/features/device-control/README.md) |
+| 知识库 / 记忆 / 人格 / 定时 | [docs/features/digital-human/README.md](./docs/features/digital-human/README.md) |
+
+### 开发手册（Developer Guides）
+
+| 手册 | 面向 | 路径 |
+|------|------|------|
+| **APK 级插件开发** | 要给 AI 加新工具 / 新 ACI 能力 / 新界面 / 新指令：30 秒理解框架、一条命令生成骨架、扩展点清单、`apk_plugin` 管理工具、踩坑与真机验证 | [docs/PLUGIN_DEV_GUIDE.md](./docs/PLUGIN_DEV_GUIDE.md) |
+| **ACI 受控端开发** | 要把自己的 App 暴露成 AI 可调用的能力 | [docs/ACI_DEVELOPER_GUIDE.md](./docs/ACI_DEVELOPER_GUIDE.md) |
+| **ACI 技术架构** | ACI 协议与实现细节 | [docs/ACI_TECHNICAL_ARCHITECTURE.md](./docs/ACI_TECHNICAL_ARCHITECTURE.md) |
+| **终端架构** | PTY / proot / 前台保活 / IPC | [docs/TERMINAL_ARCHITECTURE.md](./docs/TERMINAL_ARCHITECTURE.md) |
+
+### 其他既有文档
+
+- [docs/architecture/云端推理思考与工具调用架构.md](./docs/architecture/云端推理思考与工具调用架构.md)（N1–N15 实施记录）
+- [docs/architecture/本地推理引擎思考与工具调用架构.md](./docs/architecture/本地推理引擎思考与工具调用架构.md)
+
+---
+
+## 许可证 · License
+
+Zorv AI 本应用源码以 **Apache-2.0** 许可证发布（见 [LICENSE](./LICENSE)）。
+
+- **主许可**：Apache-2.0（应用全部源码）。
+- **GeckoView（Mozilla）**：以 **MPL-2.0** 分发（file-level copyleft）。该依赖随构建引入（可选内置浏览器引擎，当前渲染实际走系统 `android.webkit.WebView`），对应源代码随构建提供。
+- **端侧 CPython 3.14（PyEngine / Scripting 沙箱）**：Python 解释器本体以 **PSF-2.0** 分发；随包链接的 OpenSSL（Apache-2.0）、SQLite（Public Domain）见 [NOTICE](./NOTICE)。
+- **Terminal 终端库（Termux，`libtermux-terminal`）**：以 **GPL-3.0** 分发（强 Copyleft）。本应用链接该库提供终端能力，依 GPL-3.0 第 1、3 条，完整对应源码见 [NOTICE](./NOTICE) 与本仓库源码树。
+- **dshmobile 内置 Termux 运行时快照**：以 **GPL-3.0** 分发（强 Copyleft）。该快照随包内置提供终端/Shell 运行时能力，对应源码随本仓库分发。
+- **墨语言（Moyu）运行时**：内置 proot / Bash / QEMU / Ubuntu rootfs 等组件以 **GPL** 系列许可证分发（proot、Bash、QEMU 为 GPL-2.0+/GPL-3.0，Ubuntu rootfs 为 GPL 相关）；本应用以独立进程调用其运行时，依其许可证要求如实声明，对应源码见 [NOTICE](./NOTICE)。
+- **其余第三方依赖**（AndroidX / Jetpack Compose、Kotlin、OkHttp、Shizuku、QuickJS、Sherpa-NCNN、Chart.js / D3 / ECharts / KaTeX、React / Recharts / Lucide 等）各自保留原有许可证，完整清单见 [NOTICE](./NOTICE)。
+
+> 第三方许可全量清单（按功能模块归类、共 117 条 / 11 类）由 [tools/gen_licenses.py](./tools/gen_licenses.py) 统一生成至 `app/src/main/assets/legal/third_party_licenses.json`，并同步到根 `NOTICE`；「设置 → 关于 ZorvAI → 开源许可证」页面数据驱动展示。
+> 本仓库仅就**实际随包分发**的组件声明其许可证义务；未随包分发的组件不产生额外的 Copyleft 义务。
+> 仓库根目录下的 `DesktopFriends/` 为参考研究目录，**不参与 APK 构建、不随包分发**，故其许可证不构成本应用的发布义务。
+
+---
+
+## 贡献 · Contributing
+
+欢迎各种贡献：核心功能开发、内置工具、CMS 模块、文档与翻译。
+
+1. Fork 本仓库
+2. 创建特性分支（`git checkout -b feature/xxx`）
+3. 提交变更（`git commit -m 'feat: xxx'`）
+4. 推送分支（`git push origin feature/xxx`）
+5. 提交 Pull Request
+
+## 问题反馈 · Feedback
+
+遇到问题或有建议？欢迎 [提交 Issue](https://github.com/Quor-a/ZorvAI/issues)。请尽量提供：清晰描述、复现步骤、设备型号与系统版本、相关截图。
+
+如果觉得项目不错，欢迎点个 ⭐ Star 支持我们！
+
+## 关键词 · 便于搜索（SEO）
+
+- **中文**：Zorv AI 开源、安卓 AI 助手 开源、Android AI 智能体、本地 AI 助手、设备端 AI Agent、手机 AI 助手、Kotlin Compose AI 聊天机器人、离线 AI 助手、语音 AI 助手、安卓自动化助手、AI 工具调用、飞书 QQ 微信 AI 机器人
+- **English**：Zorv AI open source, Android AI assistant open source, on-device AI agent, local AI chatbot, Kotlin Jetpack Compose LLM, Android automation agent, voice AI assistant, TTS STT assistant, AI tool use, Feishu QQ WeChat AI bot
+
+> 仓库主页：GitHub [github.com/Quor-a/ZorvAI](https://github.com/Quor-a/ZorvAI) ｜ Gitee [gitee.com/ZorvAI/ZorvAI](https://gitee.com/ZorvAI/ZorvAI) ｜ GitLab [jihulab.com/quor-a-group/ZorvAI](https://jihulab.com/quor-a-group/ZorvAI) ｜ 最新下载：[Releases](https://github.com/Quor-a/ZorvAI/releases)
+
+---
+
+<div align="center">
+
+Made with ❤️ by the Zorv AI Team
+
+</div>
