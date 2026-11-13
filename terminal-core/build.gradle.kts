@@ -77,26 +77,29 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.webkit)
     implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.material.icons.extended)
-    implementation(libs.compose.animation)
-    implementation(libs.compose.animation.core)
-    implementation(libs.navigation.compose)
-    implementation(libs.androidx.ui.graphics.android)
-    implementation(libs.androidx.runtime.android)
-    implementation(libs.androidx.ui.text.android)
-    implementation(libs.androidx.animation.android)
-    implementation(libs.androidx.ui.android)
-    implementation(libs.coroutines.core)
-    implementation(libs.coroutines.android)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    
+    // Compose BOM 统一版本控制 (如果这一行也报错，请删掉这行，并把下面 Compose 相关的加上版本号如 :1.7.0)
+    implementation(platform(libs.compose.bom)) 
+    
+    // === 替换了所有报错的 Compose 依赖（由 BOM 自动管理版本） ===
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.animation:animation")
+    implementation("androidx.compose.animation:animation-core")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.compose.runtime:runtime")
+    implementation("androidx.compose.ui:ui-text")
+
+    // === 替换了所有报错的协程和生命周期依赖 ===
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
 
     // Kotlin Serialization
-    implementation(libs.kotlinx.serialization.json)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // FTP 服务器依赖
     implementation("org.apache.ftpserver:ftpserver-core:1.2.0") {
@@ -105,8 +108,8 @@ dependencies {
     implementation("org.apache.ftpserver:ftplet-api:1.2.0")
 
     // 真正内置的 SSH 服务端（Apache MINA SSHD，纯 Java，跑在 App host 进程内）
-    implementation(libs.apache.sshd.core)
+    implementation("org.apache.sshd:sshd-core:2.12.1")
     // SSHD 依赖 slf4j；显式带上 nop 绑定，避免运行时无 provider 的告警
-    implementation(libs.slf4j.api)
-    implementation(libs.slf4j.nop)
+    implementation("org.slf4j:slf4j-api:2.0.13")
+    implementation("org.slf4j:slf4j-nop:2.0.13")
 }
