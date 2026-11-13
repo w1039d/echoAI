@@ -34,6 +34,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        // 【新增的修复代码】解决找不到 :llama, :mnn 等子模块 debug 变体的问题
+        debug {
+            matchingFallbacks += listOf("release")
+        }
     }
 
     compileOptions {
